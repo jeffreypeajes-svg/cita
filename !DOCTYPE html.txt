@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Una Invitación Especial 💕</title>
+    <!-- Librería para el efecto de Confeti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --bg: #fdf2f8;
+            --card-bg: #fff0f5;
+            --primary: #f472b6;
+            --primary-hover: #ec4899;
+            --success: #f43f5e;
+            --text: #831843;
+            --muted: #9d174d;
+            --border: #fbcfe8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(#fbcfe8 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 3px dashed var(--border);
+            border-radius: 24px;
+            padding: 30px;
+            max-width: 480px;
+            width: 100%;
+            box-shadow: 0 15px 35px rgba(244, 114, 182, 0.2);
+            position: relative;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .badge {
+            background: #fce7f3;
+            color: var(--primary-hover);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #9d174d;
+            font-weight: 800;
+        }
+
+        p.desc {
+            color: var(--muted);
+            font-size: 0.85rem;
+            line-height: 1.4;
+            opacity: 0.85;
+        }
+
+        /* PASO 1 - Botones */
+        .step-1-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 30px;
+            min-height: 70px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn-yes {
+            background-color: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.4);
+            z-index: 2;
+        }
+
+        .btn-yes:hover {
+            transform: scale(1.05);
+            background-color: var(--primary-hover);
+        }
+
+        .btn-no {
+            background-color: #fca5a5;
+            color: #7f1d1d;
+            position: absolute;
+            right: 5%;
+            transition: top 0.25s ease, left 0.25s ease;
+            z-index: 10;
+        }
+
+        /* Grid de selección de tipo de plan */
+        .grid-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .option-box {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .option-box:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .option-box.active {
+            border-color: var(--primary-hover);
+            background: #fce7f3;
+        }
+
+        .option-box input {
+            display: none;
+        }
+
+        .option-box .icon {
+            font-size: 1.6rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .option-box .label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        /* Componente de Calendario Visual */
+        .custom-calendar {
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 25px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-header h3 {
+            font-size: 1.05rem;
+            color: var(--text);
+            text-transform: capitalize;
+        }
+
+        .calendar-header button {
+            background: #fce7f3;
+            border: none;
+            color: var(--primary-hover);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .calendar-weekdays {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 6px;
+        }
+
+        .day-cell {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text);
+        }
+
+        .day-cell:not(.empty):not(.disabled):hover {
+            background: #fce7f3;
+            color: var(--primary-hover);
+        }
+
+        .day-cell.selected {
+            background: var(--primary) !important;
+            color: #fff !important;
+            font-weight: 800;
+            box-shadow: 0 4px 10px rgba(244, 114, 182, 0.4);
+        }
+
+        .day-cell.disabled {
+            color: #d1d5db;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        .day-cell.empty {
+            cursor: default;
+        }
+
+        /* Inputs de Hora */
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        input[type="time"] {
+            width: 100%;
+            padding: 14px;
+            background: #fff;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1.1rem;
+            outline: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        input[type="time"]:focus {
+            border-color: var(--primary);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--primary);
+            color: #fff;
+            padding: 14px;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(244, 114, 182, 0.3);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: #fff;
+            width: 100%;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-whatsapp:hover {
+            background-color: #1ea952;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Resumen Final */
+        .summary-card {
+            background: #fff;
+            border-radius: 16px;
+            padding: 18px;
+            margin: 20px 0;
+            border: 2px solid var(--border);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: 0.9rem;
+        }
+
+        .summary-row:last-child {
+            border-bottom: none;
+        }
+
+        .summary-row span:first-child {
+            color: var(--muted);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    
+    <!-- PANTALLA INICIAL: PREGUNTA -->
+    <div id="step1">
+        <div class="header">
+            <span class="badge">💖 PREGUNTA DEL DÍA</span>
+            <h1>¿Quieres salir conmigo? ✨</h1>
+            <p class="desc">Es sin presión y sin compromiso</p>
+        </div>
+
+        <div class="step-1-actions">
+            <button class="btn btn-yes" onclick="goToStep(2)">¡SÍ, ME ENCANTARÍA! 💌</button>
+            <button class="btn btn-no" id="btnNo" onmouseover="handleNoInteraction()" onclick="handleNoInteraction()">No...</button>
+        </div>
+    </div>
+
+    <!-- PASO 1: LUGAR / PLAN -->
+    <div id="step2" class="hidden">
+        <div class="header">
+            <span class="badge">🌸 PASO 1 DE 3</span>
+            <h1>¿Qué tienes en mente? ✨</h1>
+        </div>
+
+        <div class="grid-options">
+            <label class="option-box active" onclick="selectOption(this)">
+                <input type="radio" name="place" value="Cine" checked>
+                <span class="icon">🎬</span>
+                <span class="label">Cine</span>
+            </label>
+            <label class="option-box" onclick="selectOption(this)">
+                <input type="radio" name="place" value="Cena">
+                <span class="icon">🍽️</span>
+                <span class="label">Cena</span>
+            </label>
+            <label class="option-box" onclick="selectOption(this)">
+                <input type="radio" name="place" value="Bar">
+                <span class="icon">🍹</span>
+                <span class="label">Bar</span>
+            </label>
+            <label class="option-box" onclick="selectOption(this)">
+                <input type="radio" name="place" value="Sorpréndeme">
+                <span class="icon">✨</span>
+                <span class="label">Sorpréndeme</span>
+            </label>
+        </div>
+
+        <button type="button" class="btn btn-submit" onclick="goToStep(3)">CONTINUAR ➡️</button>
+    </div>
+
+    <!-- PASO 2: FECHA (CALENDARIO) -->
+    <div id="step3" class="hidden">
+        <div class="header">
+            <span class="badge">📅 PASO 2 DE 3</span>
+            <h1>¿Qué día prefieres? ✨</h1>
+        </div>
+
+        <div class="custom-calendar">
+            <div class="calendar-header">
+                <button onclick="changeMonth(-1)">&lt;</button>
+                <h3 id="calendarMonth"></h3>
+                <button onclick="changeMonth(1)">&gt;</button>
+            </div>
+            <div class="calendar-weekdays">
+                <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+            </div>
+            <div class="calendar-days" id="calendarDays"></div>
+        </div>
+
+        <button type="button" class="btn btn-submit" onclick="validateDateAndNext()">CONTINUAR ➡️</button>
+    </div>
+
+    <!-- PASO 3: HORA -->
+    <div id="step4" class="hidden">
+        <div class="header">
+            <span class="badge">⏰ PASO 3 DE 3</span>
+            <h1>¿A qué hora? ✨</h1>
+        </div>
+
+        <div class="input-group">
+            <input type="time" id="time" required>
+        </div>
+
+        <button type="button" class="btn btn-submit" onclick="finishSelection()">GUARDAR PLAN 💕</button>
+    </div>
+
+    <!-- CONFIRMACIÓN Y ENVÍO -->
+    <div id="step5" class="hidden" style="text-align: center;">
+        <div class="header">
+            <span class="badge">🎀 ¡CITA CONFIRMADA!</span>
+            <h1>¡Tenemos un plan! 🗓️✨</h1>
+            <p class="desc">Aquí está el resumen de lo que elegiste:</p>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Plan:</span>
+                <strong id="resPlace"></strong>
+            </div>
+            <div class="summary-row">
+                <span>Fecha:</span>
+                <strong id="resDate"></strong>
+            </div>
+            <div class="summary-row">
+                <span>Hora:</span>
+                <strong id="resTime"></strong>
+            </div>
+        </div>
+
+        <p class="desc" style="font-size: 0.85rem; margin-bottom: 10px;">
+            Haz clic abajo para enviarme tu respuesta confirmada por WhatsApp:
+        </p>
+
+        <a id="whatsappBtn" href="#" target="_blank" class="btn btn-whatsapp">
+            📲 Enviar confirmación por WhatsApp
+        </a>
+    </div>
+
+</div>
+
+<script>
+    const TU_TELEFONO = "TU_NUMERO_AQUI"; 
+    let noAttempts = 0;
+
+    // Variables para el Calendario
+    let currentDate = new Date();
+    let selectedDate = null;
+
+    function handleNoInteraction() {
+        const btnNo = document.getElementById('btnNo');
+        noAttempts++;
+
+        if (noAttempts === 1) {
+            btnNo.innerText = "¿Estás segura que eliges el no? 🤔";
+        } else if (noAttempts === 2) {
+            btnNo.innerText = "Piénsalo bien... 💭";
+        } else {
+            btnNo.innerText = "Tú no eres la que sabes 😜";
+        }
+
+        const x = Math.random() * (window.innerWidth - btnNo.clientWidth - 50);
+        const y = Math.random() * (window.innerHeight - btnNo.clientHeight - 50);
+        
+        btnNo.style.position = 'fixed';
+        btnNo.style.left = `${Math.max(20, Math.min(x, window.innerWidth - 180))}px`;
+        btnNo.style.top = `${Math.max(20, Math.min(y, window.innerHeight - 80))}px`;
+    }
+
+    function goToStep(stepNumber) {
+        document.querySelectorAll('.card > div').forEach(el => el.classList.add('hidden'));
+        document.getElementById(`step${stepNumber}`).classList.remove('hidden');
+        if (stepNumber === 3) {
+            renderCalendar();
+        }
+    }
+
+    function selectOption(element) {
+        document.querySelectorAll('.option-box').forEach(el => el.classList.remove('active'));
+        element.classList.add('active');
+        element.querySelector('input').checked = true;
+    }
+
+    /* Lógica del Calendario Visual */
+    function renderCalendar() {
+        const monthHeader = document.getElementById('calendarMonth');
+        const daysContainer = document.getElementById('calendarDays');
+        daysContainer.innerHTML = '';
+
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth();
+
+        const monthNames = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        monthHeader.innerText = `${monthNames[month]} ${year}`;
+
+        const firstDay = new Date(year, month, 1).getDay();
+        const totalDays = new Date(year, month + 1, 0).getDate();
+        const today = new Date();
+        today.setHours(0,0,0,0);
+
+        for (let i = 0; i < firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.classList.add('day-cell', 'empty');
+            daysContainer.appendChild(emptyCell);
+        }
+
+        for (let day = 1; day <= totalDays; day++) {
+            const dayCell = document.createElement('div');
+            dayCell.classList.add('day-cell');
+            dayCell.innerText = day;
+
+            const thisDate = new Date(year, month, day);
+
+            if (thisDate < today) {
+                dayCell.classList.add('disabled');
+            } else {
+                if (selectedDate && thisDate.getTime() === selectedDate.getTime()) {
+                    dayCell.classList.add('selected');
+                }
+                dayCell.onclick = () => {
+                    document.querySelectorAll('.day-cell').forEach(c => c.classList.remove('selected'));
+                    dayCell.classList.add('selected');
+                    selectedDate = new Date(year, month, day);
+                };
+            }
+            daysContainer.appendChild(dayCell);
+        }
+    }
+
+    function changeMonth(delta) {
+        currentDate.setMonth(currentDate.getMonth() + delta);
+        renderCalendar();
+    }
+
+    function validateDateAndNext() {
+        if (!selectedDate) {
+            alert("Por favor selecciona un día del calendario");
+            return;
+        }
+        goToStep(4);
+    }
+
+    function finishSelection() {
+        const timeInput = document.getElementById('time').value;
+        if (!timeInput) {
+            alert("Por favor selecciona una hora");
+            return;
+        }
+
+        const place = document.querySelector('input[name="place"]:checked').value;
+        const time = timeInput;
+
+        const formattedDate = selectedDate.toLocaleDateString('es-ES', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        document.getElementById('resPlace').innerText = place;
+        document.getElementById('resDate').innerText = formattedDate;
+        document.getElementById('resTime').innerText = time;
+
+        goToStep(5);
+
+        confetti({
+            particleCount: 120,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#f472b6', '#ec4899', '#f43f5e', '#fbcfe8']
+        });
+
+        const mensaje = `¡Hola! Acepto la cita 💕\n\n` +
+                        `📌 *Plan:* ${place}\n` +
+                        `📅 *Fecha:* ${formattedDate}\n` +
+                        `⏰ *Hora:* ${time}\n\n` +
+                        `¡Nos vemos pronto! ✨`;
+
+        const encodedMessage = encodeURIComponent(mensaje);
+        const whatsappUrl = `https://api.whatsapp.com/send?phone=${TU_TELEFONO}&text=${encodedMessage}`;
+        
+        document.getElementById('whatsappBtn').href = whatsappUrl;
+    }
+</script>
+
+</body>
+</html>
