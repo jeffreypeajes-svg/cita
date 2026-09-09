@@ -316,20 +316,35 @@
             display: none !important;
         }
 
-        /* Resumen Final */
+        /* Estilo de la Tarjeta de Resumen Final */
         .summary-card {
             background: #fff;
-            border-radius: 16px;
-            padding: 18px;
+            border-radius: 18px;
+            padding: 20px;
             margin: 20px 0;
             border: 2px solid var(--border);
+            box-shadow: 0 5px 15px rgba(244, 114, 182, 0.1);
+            text-align: left;
+        }
+
+        .summary-title {
+            text-align: center;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--primary-hover);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed var(--border);
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border);
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #fce7f3;
             font-size: 0.9rem;
         }
 
@@ -340,6 +355,12 @@
         .summary-row span:first-child {
             color: var(--muted);
             font-weight: 600;
+        }
+
+        .summary-row strong {
+            color: var(--text);
+            font-weight: 700;
+            text-align: right;
         }
     </style>
 </head>
@@ -427,28 +448,30 @@
             <input type="time" id="time" required>
         </div>
 
-        <button type="button" class="btn btn-submit" onclick="finishSelection()">GUARDAR PLAN 💕</button>
+        <button type="button" class="btn btn-submit" onclick="finishSelection()">VER RESUMEN 💕</button>
     </div>
 
-    <!-- CONFIRMACIÓN Y ENVÍO -->
+    <!-- CONFIRMACIÓN Y RESUMEN FINAL -->
     <div id="step5" class="hidden" style="text-align: center;">
         <div class="header">
             <span class="badge">🎀 ¡CITA CONFIRMADA!</span>
             <h1>¡Tenemos un plan! 🗓️✨</h1>
-            <p class="desc">Aquí está el resumen de lo que elegiste:</p>
+            <p class="desc">Aquí tienes el resumen de lo que elegiste:</p>
         </div>
 
+        <!-- TARJETA DE RESUMEN DE RESPUESTAS -->
         <div class="summary-card">
+            <div class="summary-title">📋 Resumen de la Cita</div>
             <div class="summary-row">
-                <span>Plan:</span>
+                <span>📌 Plan elegido:</span>
                 <strong id="resPlace"></strong>
             </div>
             <div class="summary-row">
-                <span>Fecha:</span>
+                <span>📅 Fecha seleccionada:</span>
                 <strong id="resDate"></strong>
             </div>
             <div class="summary-row">
-                <span>Hora:</span>
+                <span>⏰ Hora acordada:</span>
                 <strong id="resTime"></strong>
             </div>
         </div>
@@ -465,7 +488,7 @@
 </div>
 
 <script>
-    const TU_TELEFONO = "TU_NUMERO_AQUI"; 
+    const TU_TELEFONO = "829-753-1724"; 
     let noAttempts = 0;
 
     // Variables para el Calendario
