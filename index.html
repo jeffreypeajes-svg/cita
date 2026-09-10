@@ -88,7 +88,6 @@
             opacity: 0.85;
         }
 
-        /* PASO 1 - Botones */
         .step-1-actions {
             display: flex;
             gap: 15px;
@@ -136,7 +135,6 @@
             z-index: 10;
         }
 
-        /* Grid de selección de tipo de plan */
         .grid-options {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -180,7 +178,6 @@
             color: var(--text);
         }
 
-        /* Componente de Calendario Visual */
         .custom-calendar {
             background: #fff;
             border: 2px solid var(--border);
@@ -265,7 +262,6 @@
             cursor: default;
         }
 
-        /* Inputs de Hora */
         .input-group {
             margin-bottom: 25px;
         }
@@ -316,7 +312,6 @@
             display: none !important;
         }
 
-        /* Estilo de la Tarjeta de Resumen Final */
         .summary-card {
             background: #fff;
             border-radius: 18px;
@@ -372,7 +367,7 @@
     <div id="step1">
         <div class="header">
             <span class="badge">💖 PREGUNTA DEL DÍA</span>
-            <h1>¿Quieres salir conmigo? ✨</h1>
+            <h1>¿Y si salimos? ✨</h1>
             <p class="desc">Es sin presión y sin compromiso</p>
         </div>
 
@@ -459,7 +454,6 @@
             <p class="desc">Aquí tienes el resumen de lo que elegiste:</p>
         </div>
 
-        <!-- TARJETA DE RESUMEN DE RESPUESTAS -->
         <div class="summary-card">
             <div class="summary-title">📋 Resumen de la Cita</div>
             <div class="summary-row">
@@ -488,10 +482,9 @@
 </div>
 
 <script>
-    const TU_TELEFONO = "829-753-1724"; 
+    const TU_TELEFONO = "18297531724"; 
     let noAttempts = 0;
 
-    // Variables para el Calendario
     let currentDate = new Date();
     let selectedDate = null;
 
@@ -529,7 +522,6 @@
         element.querySelector('input').checked = true;
     }
 
-    /* Lógica del Calendario Visual */
     function renderCalendar() {
         const monthHeader = document.getElementById('calendarMonth');
         const daysContainer = document.getElementById('calendarDays');
@@ -588,6 +580,14 @@
         goToStep(4);
     }
 
+    function format12Hour(time24) {
+        const [hours, minutes] = time24.split(':');
+        let h = parseInt(hours, 10);
+        const ampm = h >= 12 ? 'PM' : 'AM';
+        h = h % 12 || 12;
+        return `${h}:${minutes} ${ampm}`;
+    }
+
     function finishSelection() {
         const timeInput = document.getElementById('time').value;
         if (!timeInput) {
@@ -596,7 +596,7 @@
         }
 
         const place = document.querySelector('input[name="place"]:checked').value;
-        const time = timeInput;
+        const formattedTime = format12Hour(timeInput);
 
         const formattedDate = selectedDate.toLocaleDateString('es-ES', {
             weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
@@ -604,7 +604,7 @@
 
         document.getElementById('resPlace').innerText = place;
         document.getElementById('resDate').innerText = formattedDate;
-        document.getElementById('resTime').innerText = time;
+        document.getElementById('resTime').innerText = formattedTime;
 
         goToStep(5);
 
@@ -618,7 +618,7 @@
         const mensaje = `¡Hola! Acepto la cita 💕\n\n` +
                         `📌 *Plan:* ${place}\n` +
                         `📅 *Fecha:* ${formattedDate}\n` +
-                        `⏰ *Hora:* ${time}\n\n` +
+                        `⏰ *Hora:* ${formattedTime}\n\n` +
                         `¡Nos vemos pronto! ✨`;
 
         const encodedMessage = encodeURIComponent(mensaje);
